@@ -115,6 +115,7 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; line-height: 1.08;
 .measure { max-width: 46ch; }
 .measure-wide { max-width: 62ch; }
 .grid { display: grid; gap: clamp(20px, 3vw, 34px); }
+.reviews-grid { display: grid; gap: clamp(20px, 3vw, 34px); grid-template-columns: repeat(3, 1fr); }
 
 /* ---------- Buttons ---------- */
 .btn {
@@ -444,7 +445,10 @@ body.menu-open .mobile-menu a:nth-child(5){animation-delay:.32s} body.menu-open 
 .ba__head { text-align: center; max-width: 620px; margin-bottom: clamp(24px, 4vh, 44px); }
 .ba__head .h2 { color: var(--white); }
 .ba__head p { color: rgba(248,242,232,0.75); margin-top: 0.8rem; }
-.ba__stage { position: relative; width: min(1100px, 92vw); aspect-ratio: 16/9; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.ba__stage {
+  position: relative; width: min(1100px, 92vw); aspect-ratio: 16/9; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
+  touch-action: pan-y; cursor: ew-resize; user-select: none; -webkit-user-select: none;
+}
 .ba__layer { position: absolute; inset: 0; }
 .ba__layer .ph { position: absolute; inset: 0; height: 100%; }
 .ba__after { clip-path: inset(0 0 0 0); }        /* revealed by scroll */
@@ -454,8 +458,8 @@ body.menu-open .mobile-menu a:nth-child(5){animation-delay:.32s} body.menu-open 
 .ba__handle::before { content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 46px; height: 46px; border-radius: 50%; background: var(--white); box-shadow: var(--shadow-sm); }
 .ba__handle::after { content: "‹ ›"; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 1.1rem; color: var(--cedar-dark); font-weight: 700; letter-spacing: -1px; }
 .ba__hint { margin-top: 1.4rem; font-size: 0.82rem; color: rgba(248,242,232,0.6); letter-spacing: 0.08em; }
-/* mobile fallback = tap toggle */
-.ba--toggle .ba__after { transition: clip-path 0.6s var(--ease-in-out); }
+.ba__hint--mobile { display: none; }
+/* mobile: draggable handle — no transition, so the wipe tracks the finger 1:1 */
 
 /* ============================================================
    TESTIMONIALS
@@ -587,6 +591,7 @@ body.menu-open .mobile-menu a:nth-child(5){animation-delay:.32s} body.menu-open 
    ============================================================ */
 @media (max-width: 1024px) {
   .svc-grid { grid-template-columns: repeat(2, 1fr); }
+  .reviews-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-top { grid-template-columns: 1fr 1fr; }
   .masonry { columns: 2; }
 }
@@ -601,9 +606,12 @@ body.menu-open .mobile-menu a:nth-child(5){animation-delay:.32s} body.menu-open 
   .call-bar { display: flex; }
   body { padding-bottom: 68px; }
   .site-footer .call-bar { position: static; }
+  .ba__hint--desktop { display: none; }
+  .ba__hint--mobile { display: block; }
 }
 @media (max-width: 620px) {
   .svc-grid { grid-template-columns: 1fr; }
+  .reviews-grid { grid-template-columns: 1fr; }
   .masonry { columns: 1; }
   .field-2 { grid-template-columns: 1fr; }
   .footer-top { grid-template-columns: 1fr; }

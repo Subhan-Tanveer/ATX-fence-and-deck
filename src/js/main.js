@@ -97,7 +97,7 @@ function initReveals() {
   // group by container so items in the same grid/gallery/timeline stagger together
   const containers = new Map();
   els.forEach((el) => {
-    const parent = el.closest('[data-gallery], .svc-grid, .timeline, .masonry, .grid, .footer-top, [data-lightbox-frame]') || document.body;
+    const parent = el.closest('[data-gallery], .svc-grid, .timeline, .masonry, .grid, .reviews-grid, .footer-top, [data-lightbox-frame]') || document.body;
     if (!containers.has(parent)) containers.set(parent, []);
     containers.get(parent).push(el);
   });
@@ -294,13 +294,37 @@ function initBeforeAfter() {
     });
     return () => { st.kill(); after.style.clipPath = ''; };
   });
-  // Mobile: tap to toggle, starts on AFTER for instant payoff
+  // Mobile: draggable slider handle (Pointer Events cover touch + mouse).
+  // Starts at the midpoint so both photos are visible immediately. Tracks
+  // via a plain flag + window-level move/up listeners rather than
+  // setPointerCapture — keeps tracking smoothly even if a fast swipe
+  // drifts slightly outside the image bounds, and avoids capture-related
+  // edge cases on some mobile browsers.
   mm.add('(max-width: 860px)', () => {
+    if (!stage) return;
     section.classList.add('ba--toggle');
-    let shown = true; setWipe(1);
-    const toggle = () => { shown = !shown; setWipe(shown ? 1 : 0); };
-    stage && stage.addEventListener('click', toggle);
-    return () => stage && stage.removeEventListener('click', toggle);
+    setWipe(0.5);
+
+    let dragging = false;
+    const moveTo = (clientX) => {
+      const rect = stage.getBoundingClientRect();
+      setWipe(Math.min(1, Math.max(0, (clientX - rect.left) / rect.width)));
+    };
+    const onDown = (e) => { dragging = true; moveTo(e.clientX); };
+    const onMove = (e) => { if (dragging) moveTo(e.clientX); };
+    const onUp = () => { dragging = false; };
+
+    stage.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+
+    return () => {
+      stage.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+    };
   });
 }
 
