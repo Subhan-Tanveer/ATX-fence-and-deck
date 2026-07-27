@@ -616,7 +616,11 @@ body.menu-open .mobile-menu a:nth-child(5){animation-delay:.32s} body.menu-open 
   .field-2 { grid-template-columns: 1fr; }
   .footer-top { grid-template-columns: 1fr; }
   .stats__grid { grid-template-columns: 1fr 1fr; }
-  .hero { min-height: 92svh; }
+  .hero { min-height: 92svh; padding-top: 100px; }
+  /* The 3rem floor in the desktop clamp() is too large on narrow phones —
+     "The deck you won't have to redo." was wrapping into 4 tall lines and
+     pushing up into the fixed header. */
+  .hero__title { font-size: clamp(2.1rem, 10vw, 6.2rem); }
 }
 
 /* ============================================================

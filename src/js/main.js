@@ -203,15 +203,32 @@ function initHeroTitle() {
   // letter-by-letter sparkle on headline
   lines.forEach((line, idx) => {
     const text = line.textContent;
-    // Spaces must stay bare text (not wrapped in display:inline-block spans) —
-    // a lone space inside an inline-block collapses to zero width, since CSS
-    // trims leading/trailing whitespace within that element's own formatting
-    // context, which silently ran every word together.
-    const letters = text.split('').map((char) => char === ' '
-      ? ' '
-      : `<span class="letter" style="display:inline-block;opacity:0">${char}</span>`
-    ).join('');
-    line.innerHTML = letters;
+    line.innerHTML = '';
+    // Each word's letters are grouped inside a nowrap inline-block wrapper —
+    // adjacent inline-block letter spans with no wrapper are each their own
+    // line-break opportunity to the browser, so on narrow phones the line
+    // was breaking mid-word (e.g. "The deck y" / "ou won't"). The wrapper
+    // makes each word an atomic unit that wraps as a whole; the actual
+    // space between words stays bare text (not wrapped — a lone space
+    // inside an inline-block collapses to zero width, which previously
+    // ran every word together).
+    text.split(/(\s+)/).forEach((part) => {
+      if (!part) return;
+      if (/^\s+$/.test(part)) {
+        line.appendChild(document.createTextNode(part));
+        return;
+      }
+      const word = document.createElement('span');
+      word.style.cssText = 'display:inline-block;white-space:nowrap';
+      part.split('').forEach((char) => {
+        const letter = document.createElement('span');
+        letter.className = 'letter';
+        letter.style.cssText = 'display:inline-block;opacity:0';
+        letter.textContent = char;
+        word.appendChild(letter);
+      });
+      line.appendChild(word);
+    });
     const letterEls = line.querySelectorAll('.letter');
     gsap.to(letterEls, {
       opacity: 1, duration: 0.04, stagger: 0.025, delay: 0.15 + idx * 0.14
