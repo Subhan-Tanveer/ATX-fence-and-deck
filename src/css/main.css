@@ -552,9 +552,13 @@ body.menu-open .mobile-menu a:nth-child(5){animation-delay:.32s} body.menu-open 
 .footer-bottom { border-top: 1px solid rgba(255,255,255,0.12); padding-block: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; font-size: 0.84rem; color: rgba(248,242,232,0.6); }
 
 /* Sticky mobile call bar */
-.call-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 90; display: none; padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
-  background: rgba(248,242,232,0.94); backdrop-filter: blur(12px); box-shadow: 0 -8px 30px -20px rgba(43,33,25,0.6); gap: 10px; }
-.call-bar .btn { flex: 1; }
+.call-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 90; display: none; padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  background: rgba(248,242,232,0.94); backdrop-filter: blur(12px); box-shadow: 0 -8px 30px -20px rgba(43,33,25,0.6); gap: 8px; }
+.call-bar .btn {
+  flex: 1; padding: 0.6rem 0.7rem; font-size: 0.84rem; gap: 0.4rem;
+  white-space: nowrap; overflow: hidden;
+}
+.call-bar .btn svg { flex: none; width: 15px; height: 15px; }
 
 /* ============================================================
    PAGE HEADER (interior pages)
